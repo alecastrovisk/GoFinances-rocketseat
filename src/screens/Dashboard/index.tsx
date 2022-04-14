@@ -4,6 +4,7 @@ import {
   Container,
   Header,
   UserWrapper,
+  Icon,
   UserInfo,
   Photo,
   User,
@@ -27,7 +28,11 @@ import {
               <UserName>Alexandre</UserName>
             </User>
           </UserInfo>
+      
+          <Icon name='power'/>
         </UserWrapper>
+
+       
       </Header>
     </Container>
   );
