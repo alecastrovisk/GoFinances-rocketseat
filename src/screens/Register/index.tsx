@@ -36,7 +36,7 @@ export function Register() {
   function handleCloseSelectCategoryModal() {
     setCategoryModalOpen(false);
   }
-
+  console.log('teste github');
   return (
     <Container>
       <Header>
@@ -85,6 +85,7 @@ export function Register() {
         />
       </Modal>
     </Container>
+
   );
 }
 
