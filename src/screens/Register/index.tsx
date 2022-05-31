@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  Keyboard, 
-  Modal, 
+  Keyboard,
+  Modal,
   TouchableWithoutFeedback,
   Alert,
 } from 'react-native';
@@ -13,7 +13,6 @@ import { useForm } from 'react-hook-form';
 
 import { CategorySelectButton } from '../../Components/CategorySelectButton';
 import { Button } from '../../Components/Form/Button';
-import { Input } from '../../Components/Form/Input';
 import { InputForm } from '../../Components/Form/InputForm';
 import { TransactionTypeButton } from '../../Components/Form/TransactionTypeButton';
 import { CategorySelect } from '../CategorySelect';
@@ -34,12 +33,12 @@ interface FormData {
 
 const schema = Yup.object().shape({
   name: Yup
-  .string()
-  .required('Nome é obrigatório'),
+    .string()
+    .required('Nome é obrigatório'),
   amount: Yup
-  .number()
-  .typeError('informe um valor numérico')
-  .positive('O valor não pode ser negativo')
+    .number()
+    .typeError('informe um valor numérico')
+    .positive('O valor não pode ser negativo')
 });
 
 export function Register() {
@@ -61,7 +60,7 @@ export function Register() {
     resolver: yupResolver(schema)
   });
 
-  function handleTransactionsTypeSelect(type: 'up' | 'down'){
+  function handleTransactionsTypeSelect(type: 'up' | 'down') {
     setTransactionType(type);
   }
 
@@ -74,18 +73,19 @@ export function Register() {
   }
 
   async function handleRegister(form: FormData) {
-    if(!transactionType) {
+    if (!transactionType) {
       return Alert.alert('Selecione o tipo da transação');
 
     }
-    if(category.key === 'category') {
+    if (category.key === 'category') {
       return Alert.alert('Selecione a categoria');
     }
     const newData = {
       name: form.name,
       amount: form.amount,
       transactionType,
-      category: category.key
+      category: category.key,
+      date: new Date()
     }
     try {
       const data = await AsyncStorage.getItem(dataKey);
@@ -93,9 +93,9 @@ export function Register() {
 
       const dataFormatted = [
         ...currentData,
-        newData  
+        newData
       ]
-
+      console.log(dataFormatted);
       await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
 
     } catch (error) {
@@ -103,15 +103,6 @@ export function Register() {
       Alert.alert('Não foi possível salvar');
     }
   }
-
-  useEffect(() => {
-    async function loadData() {
-      const data = await AsyncStorage.getItem(dataKey);
-      console.log(JSON.parse(data!));
-    }
-
-    loadData();
-  }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -123,7 +114,7 @@ export function Register() {
         <Form>
           <Fields>
             <InputForm
-              name='namea'
+              name='name'
               control={control}
               placeholder='Nome'
               autoCapitalize='sentences'
@@ -134,7 +125,7 @@ export function Register() {
             <InputForm
               name='amount'
               control={control}
-              placeholder='Preço' 
+              placeholder='Preço'
               keyboardType='numeric'
               error={errors.amount && errors.amount.message}
             />
@@ -146,7 +137,7 @@ export function Register() {
                 onPress={() => handleTransactionsTypeSelect('up')}
                 isActive={transactionType === 'up'}
               />
-              
+
               <TransactionTypeButton
                 type='down'
                 title='Outcome'
@@ -162,8 +153,8 @@ export function Register() {
           </Fields>
 
           <Button
-          title='Enviar'
-          onPress={handleSubmit(handleRegister)}
+            title='Enviar'
+            onPress={handleSubmit(handleRegister)}
           />
         </Form>
 
