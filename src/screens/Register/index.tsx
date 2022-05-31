@@ -8,8 +8,9 @@ import {
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import { useForm } from 'react-hook-form';
+import uuid from 'react-native-uuid';
+import { useNavigation } from '@react-navigation/native';
 
 import { CategorySelectButton } from '../../Components/CategorySelectButton';
 import { Button } from '../../Components/Form/Button';
@@ -52,9 +53,12 @@ export function Register() {
     name: 'Categoria',
   });
 
+  const navigation = useNavigation();
+
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm({
     resolver: yupResolver(schema)
@@ -80,7 +84,9 @@ export function Register() {
     if (category.key === 'category') {
       return Alert.alert('Selecione a categoria');
     }
+
     const newData = {
+      id: uuid.v4(),
       name: form.name,
       amount: form.amount,
       transactionType,
@@ -97,6 +103,15 @@ export function Register() {
       ]
       console.log(dataFormatted);
       await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
+
+      reset();
+      setTransactionType('');
+      setCategory({
+          key: 'category',
+          name: 'Categoria',
+      });
+
+      navigation.navigate('Listagem');
 
     } catch (error) {
       console.log(error);
