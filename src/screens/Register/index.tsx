@@ -10,7 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useForm } from 'react-hook-form';
 import uuid from 'react-native-uuid';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 import { CategorySelectButton } from '../../Components/CategorySelectButton';
 import { Button } from '../../Components/Form/Button';
@@ -53,7 +53,7 @@ export function Register() {
     name: 'Categoria',
   });
 
-  const navigation = useNavigation();
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
 
   const {
     control,
