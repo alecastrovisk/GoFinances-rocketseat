@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import AsyncStorageLib from '@react-native-async-storage/async-storage';
+import { VictoryPie } from 'victory-native';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 import { HistoryCard } from '../../Components/HistoryCard';
 
+import theme from '../../global/styles/theme';
 import { categories } from '../../utils/categories';
 
 import {
   Container, 
   Header, 
   Title,
-  Content
+  Content,
+  ChartContainer
 } from './styles';
+import { useFocusEffect } from '@react-navigation/native';
+import { ScrollView } from 'react-native';
 
 
 interface TransactionData {
@@ -24,8 +30,10 @@ interface TransactionData {
 interface CategoryData {
   key: string;
   name: string;
-  total: string;
+  total: number;
+  totalFormatted: string;
   color: string;
+  percent: string;
 }
 
 export function Resume(){
@@ -41,6 +49,11 @@ export function Resume(){
     const expenses = responseFormatted
     .filter((expense: TransactionData) => expense.type === 'negative');
 
+    const expensesTotal = expenses
+    .reduce((acumullator: number, expense: TransactionData) => {
+      return acumullator + Number(expense.amount);
+    }, 0);
+
     categories.forEach(category => {
       let categorySum = 0;
 
@@ -51,17 +64,21 @@ export function Resume(){
       });
 
       if(categorySum > 0) {
-        const total = categorySum
+        const totalFormatted = categorySum
         .toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL'
         });
 
+        const percent = `${(categorySum / expensesTotal * 100).toFixed(0)}%`
+
         totalByCategoryList.push({
           key: category.key,
           name: category.name,
           color: category.color,
-          total
+          total: categorySum,
+          totalFormatted,
+          percent
         });
       }
     });
@@ -69,24 +86,38 @@ export function Resume(){
     setTotalByCategory(totalByCategoryList);
   }
 
-  
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     loadData();
-  }, []);
+  }, []));
 
   return(
     <Container>
       <Header>
         <Title>Resumo por categoria</Title>
       </Header>
-
       <Content>
+        <ChartContainer>
+          <VictoryPie
+            data={totalByCategory}
+            colorScale={totalByCategory.map(category => category.color)}
+            style={{
+              labels: {
+                fontSize: RFValue(18),
+                fontWeight: 'bold',
+                fill: theme.colors.shape
+              }
+            }}
+            labelRadius={50}
+            x="percent"
+            y="total"
+          />
+        </ChartContainer>
         {
           totalByCategory.map(item => (
             <HistoryCard
             key={item.key}
             title={item.name}
-            amount={item.total}
+            amount={item.totalFormatted}
             color={item.color}
           />
           ))   
