@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import AsyncStorageLib from '@react-native-async-storage/async-storage';
 import { VictoryPie } from 'victory-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { addMonths, subMonths, format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 import { HistoryCard } from '../../Components/HistoryCard';
 
@@ -13,11 +15,14 @@ import {
   Header, 
   Title,
   Content,
-  ChartContainer
+  ChartContainer,
+  MonthSelect,
+  MonthSelectButton,
+  MonthSelectIcon,
+  Month,
 } from './styles';
-import { useFocusEffect } from '@react-navigation/native';
-import { ScrollView } from 'react-native';
 
+import { useFocusEffect } from '@react-navigation/native';
 
 interface TransactionData {
   type: 'positive' | 'negative';
@@ -37,7 +42,16 @@ interface CategoryData {
 }
 
 export function Resume(){
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [totalByCategory, setTotalByCategory] = useState<CategoryData[]>([]);
+  
+  function handleDateChange(action: 'next' | 'prev'){
+    if(action === 'next') {
+      setSelectedDate(addMonths(selectedDate, 1));
+    }else{
+      setSelectedDate(subMonths(selectedDate, 1));
+    }
+  }
 
   async function loadData(){
     const dataKey = '@gofinances:transactions';
@@ -47,7 +61,11 @@ export function Resume(){
     const totalByCategoryList: CategoryData[] = [];
 
     const expenses = responseFormatted
-    .filter((expense: TransactionData) => expense.type === 'negative');
+    .filter((expense: TransactionData) => 
+      expense.type === 'negative' &&
+      new Date(expense.date).getMonth() === selectedDate.getMonth() &&
+      new Date(expense.date).getFullYear() === selectedDate.getFullYear()
+    );
 
     const expensesTotal = expenses
     .reduce((acumullator: number, expense: TransactionData) => {
@@ -88,7 +106,7 @@ export function Resume(){
 
   useFocusEffect(useCallback(() => {
     loadData();
-  }, []));
+  }, [selectedDate]));
 
   return(
     <Container>
@@ -96,6 +114,21 @@ export function Resume(){
         <Title>Resumo por categoria</Title>
       </Header>
       <Content>
+
+        <MonthSelect>
+          <MonthSelectButton onPress={()=> handleDateChange('prev')}>
+            <MonthSelectIcon name="chevron-left"/>
+          </MonthSelectButton>
+          
+          <Month>
+            { format(selectedDate, 'MMMM, yyy',{ locale: ptBR })}
+          </Month>
+
+          <MonthSelectButton onPress={() => handleDateChange('next')}>
+            <MonthSelectIcon name="chevron-right"/>
+          </MonthSelectButton>
+        </MonthSelect>
+
         <ChartContainer>
           <VictoryPie
             data={totalByCategory}
