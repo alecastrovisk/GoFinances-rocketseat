@@ -101,7 +101,6 @@ export function Register() {
         ...currentData,
         newData
       ]
-      console.log(dataFormatted);
       await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
 
       reset();
