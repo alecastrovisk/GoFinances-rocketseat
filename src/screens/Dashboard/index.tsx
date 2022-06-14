@@ -3,8 +3,8 @@ import { ActivityIndicator } from 'react-native';
 import AsyncStorageLib from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { HighlightCard } from '../../Components/HighLightCard';
-import { TransactionCard, TransactionCardProps } from '../../Components/TransactionCard';
+import { HighlightCard } from '../../components/HighLightCard';
+import { TransactionCard, TransactionCardProps } from '../../components/TransactionCard';
 
 import {
   Container,

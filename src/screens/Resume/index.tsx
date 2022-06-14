@@ -6,7 +6,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { addMonths, subMonths, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-import { HistoryCard } from '../../Components/HistoryCard';
+import { HistoryCard } from '../../components/HistoryCard';
 
 import theme from '../../global/styles/theme';
 import { categories } from '../../utils/categories';

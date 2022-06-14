@@ -12,10 +12,10 @@ import { useForm } from 'react-hook-form';
 import uuid from 'react-native-uuid';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
-import { CategorySelectButton } from '../../Components/CategorySelectButton';
-import { Button } from '../../Components/Form/Button';
-import { InputForm } from '../../Components/Form/InputForm';
-import { TransactionTypeButton } from '../../Components/Form/TransactionTypeButton';
+import { CategorySelectButton } from '../../components/CategorySelectButton';
+import { Button } from '../../components/Form/Button';
+import { InputForm } from '../../components/Form/InputForm';
+import { TransactionTypeButton } from '../../components/Form/TransactionTypeButton';
 import { CategorySelect } from '../CategorySelect';
 
 import {
