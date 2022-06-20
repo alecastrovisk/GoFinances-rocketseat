@@ -18,9 +18,9 @@ import LogoSvg from '../../assets/financeLogo.svg';
 import { useAuth } from '../../hooks/auth';
 
 import { SignInSocialButton } from '../../components/SignInSocialButton';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 
-export function SignIn(){
+export function SignIn() {
   const { signInWithGoogle, signInWithApple } = useAuth();
 
   async function handleSignInWithGoogle() {
@@ -39,7 +39,7 @@ export function SignIn(){
     }
   }
 
-  return(
+  return (
     <Container>
       <Header>
         <TitleWrapper>
@@ -48,14 +48,14 @@ export function SignIn(){
             height={RFValue(34)}
           />
           <Title>
-            Controle suas {'\n'} 
-            finanças de forma {'\n'} 
+            Controle suas {'\n'}
+            finanças de forma {'\n'}
             muito simples
           </Title>
         </TitleWrapper>
 
         <SignInTitle>
-          Faça seu login com {'\n'} 
+          Faça seu login com {'\n'}
           umas das contas abaixo
         </SignInTitle>
       </Header>
@@ -67,11 +67,14 @@ export function SignIn(){
             svg={GoogleSvg}
             onPress={handleSignInWithGoogle}
           />
-          <SignInSocialButton
-            title="Entrar com o Google"
-            svg={AppleSvg}
-            onPress={handleSignInWithApple}
-          />
+          {
+            Platform.OS === 'ios' &&
+            <SignInSocialButton
+              title="Entrar com o Apple"
+              svg={AppleSvg}
+              onPress={handleSignInWithApple}
+            />
+          }
         </FooterWrapper>
       </Footer>
     </Container>
